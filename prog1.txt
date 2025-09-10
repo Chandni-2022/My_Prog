@@ -1,25 +1,33 @@
 class Solution {
 public:
-    vector<string> wordBreak(string s, vector<string>& wordDict) {
-        unordered_set<string> dict(wordDict.begin(), wordDict.end());
-        return wordBreakHelper(s, 0, dict);
-    }
+    static int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+        int m=languages.size(); // number of people
 
-private:
-    vector<string> wordBreakHelper(const string& s, int start, const unordered_set<string>& dict) {
-        vector<string> validSubstr;
+        //known languages for each person
+        vector<bitset<501>> know(m);
+        for (int i=0; i<m; i++) 
+            for (int l : languages[i]) know[i][l]=1;
         
-        if (start == s.length())
-            validSubstr.push_back("");
-        for (int end = start + 1; end <= s.length(); ++end) {
-            string prefix = s.substr(start, end - start);
-            if (dict.find(prefix) != dict.end()) {
-                vector<string> suffixes = wordBreakHelper(s, end, dict);
-                for (const string& suffix : suffixes) {
-                    validSubstr.push_back(prefix + (suffix.empty() ? "" : " ") + suffix);
-                }
-            }
+        // people need be taught
+        bitset<501> need=0;
+        for (auto& f : friendships) {
+            int a=f[0]-1, b=f[1]-1;
+            if ((know[a] & know[b]).any()) continue; // can talk
+            need[a]=need[b]=1;
         }
-        return validSubstr;
+
+        // if no need
+        if (need.count()==0) return 0;
+
+        int ans=INT_MAX;
+        for (int lang=1; lang<=n; lang++) { // languages for 1..n
+            int cnt=0;
+            for (int i=0; i<m; i++) {
+                if (need[i] & !know[i][lang]) cnt++;
+            }
+            ans=min(ans, cnt);
+        }
+
+        return ans;
     }
 };
