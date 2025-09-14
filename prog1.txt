@@ -1,86 +1,44 @@
 class Solution {
 public:
-    static int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
-        int m=languages.size(); // number of people
+    static constexpr unsigned vowMask=(1<<('A'&31))+(1<<('E'&31))+(1<<('I'&31))+(1<<('O'&31))+(1<<('U'&31));
+    static string tolow(string w) {
+        for (char& c : w) c=tolower(c);
+        return w;
+    }
 
-        //known languages for each person
-        vector<bitset<501>> know(m);
-        for (int i=0; i<m; i++) 
-            for (int l : languages[i]) know[i][l]=1;
-        
-        // people need be taught
-        bitset<501> need=0;
-        for (auto& f : friendships) {
-            int a=f[0]-1, b=f[1]-1;
-            if ((know[a] & know[b]).any()) continue; // can talk
-            need[a]=need[b]=1;
+    static string toDeV(string w) {
+        for (char& c : w)
+            if((vowMask>>(c&31))&1) c='$';
+        return w;
+    }
+
+    static vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        const int n=wordlist.size();
+        unordered_set<string> W(wordlist.begin(), wordlist.end());
+        unordered_map<string, string> Wlow, WdeV;
+        Wlow.reserve(n), WdeV.reserve(n);
+
+        for (const auto& w : wordlist) {
+            const string lw = tolow(w), dv = toDeV(lw);
+            if (!Wlow.count(lw)) Wlow[lw] = w;
+            if (!WdeV.count(dv)) WdeV[dv] = w;
         }
 
-        // if no need
-        if (need.count()==0) return 0;
-
-        int ans=INT_MAX;
-        for (int lang=1; lang<=n; lang++) { // languages for 1..n
-            int cnt=0;
-            for (int i=0; i<m; i++) {
-                if (need[i] & !know[i][lang]) cnt++;
-            }
-            ans=min(ans, cnt);
+        for (auto& q : queries) {
+            if (W.count(q)) continue;
+            string low = tolow(q), deV = toDeV(low);
+            if (Wlow.count(low)) q = Wlow[low];
+            else if (WdeV.count(deV)) q = WdeV[deV];
+            else q = "";
         }
-
-        return ans;
+        return queries;
     }
 };
-class Solution {
-public:
-    string sortVowels(string s) {
-        vector<char> vowels;
-        for (char c : s) {
-            if (isVowel(c)) {
-                vowels.push_back(c);
-            }
-        }
 
-        sort(vowels.begin(), vowels.end());
-
-        int v_index = 0;
-        for (int i = 0; i < s.size(); i++) {
-            if (isVowel(s[i])) {
-                s[i] = vowels[v_index++];
-            }
-        }
-
-        return s;
-    }
-
-private:
-    bool isVowel(char c) {
-        return string("AEIOUaeiou").find(c) != string::npos;
-    }
-};
-class Solution {
-public:
-    bool doesAliceWin(string s) {
-        for (int i = 0; i < s.size(); i++)
-            if ((0x104111 >> (s[i] - 97)) & 1)
-                return 1;                                
-        return 0;
-    }
-};
-class Solution {
-public:
-    int maxFreqSum(string s) {
-        int freq[26], maxVowel = 0, maxConso = 0;
-        for (char c : s) {
-            int i = c - 'a';
-            freq[i]++;
-            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
-                maxVowel = max(maxVowel, freq[i]);
-            }
-            else {
-                maxConso = max(maxConso, freq[i]);
-            }
-        }
-        return maxVowel + maxConso;
-    }
-};
+auto init = []()
+{ 
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    return 'c';
+}();
