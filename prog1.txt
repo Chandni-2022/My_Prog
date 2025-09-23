@@ -1,16 +1,16 @@
-class Solution {
-public:
-    int maxFrequencyElements(vector<int>& nums) {
-        uint8_t freq[101] = {0};
-        uint8_t max = 0, res = 0;
-        for (int n : nums) {
-            uint8_t f = ++freq[n];
-            if (f > max) {
-                max = f;
-                res = f;
-            } else if (f == max)
-                res += f;
-        }
-        return res;
-    }
-};
+class Solution:
+    def compareVersion(self, version1: str, version2: str) -> int:
+        vs1, vs2 = version1.split("."), version2.split(".")
+        m, n = len(vs1), len(vs2)
+
+        for i in range(max(m, n)):
+            v1 = int(vs1[i]) if i < m else 0
+            v2 = int(vs2[i]) if i < n else 0
+
+            if v1 < v2:
+                return -1
+
+            if v1 > v2:
+                return 1
+
+        return 0
