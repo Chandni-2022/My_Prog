@@ -1,14 +1,15 @@
 class Solution {
 public:
-	int findSmallestInteger(vector<int>& nums, int v) {
-		long long n = nums.size(), x, res = 0;
-		vector<int> rem(v, 0);
-		for (int i = 0; i < n; i++) {
-			x = ((nums[i] % v) + v) % v;
-			rem[x]++;
-		}
+    int maxDistinctElements(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int ans = 0, prev = -1e9;
 
-		while (rem[res % v]--) res++;
-		return res;
-	}
+        for (int i = 0; i < nums.size(); i++) {
+            int l = max(nums[i] - k, prev + 1);
+            if (l <= nums[i] + k) {
+                prev = l, ans++;
+            }
+        }
+        return ans;
+    }
 };
