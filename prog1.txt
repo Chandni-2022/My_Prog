@@ -1,15 +1,24 @@
 class Solution {
-public:
-    int maxDistinctElements(vector<int>& nums, int k) {
-        sort(nums.begin(), nums.end());
-        int ans = 0, prev = -1e9;
+    public String findLexSmallestString(String s, int a, int b) {
+        Set<String> vis = new HashSet<>();
+        String smallest = s;
+        Deque<String> q = new ArrayDeque<>();
+        q.offer(s);
+        vis.add(s);
 
-        for (int i = 0; i < nums.size(); i++) {
-            int l = max(nums[i] - k, prev + 1);
-            if (l <= nums[i] + k) {
-                prev = l, ans++;
-            }
+        while (!q.isEmpty()) {
+            String cur = q.poll();
+            if (cur.compareTo(smallest) < 0) smallest = cur;
+
+            StringBuilder sb = new StringBuilder(cur);
+            for (int i = 1; i < sb.length(); i += 2)
+                sb.setCharAt(i, (char) ((sb.charAt(i) - '0' + a) % 10 + '0'));
+            String added = sb.toString();
+            if (vis.add(added)) q.offer(added);
+
+            String rotated = cur.substring(cur.length() - b) + cur.substring(0, cur.length() - b);
+            if (vis.add(rotated)) q.offer(rotated);
         }
-        return ans;
+        return smallest;
     }
-};
+}
