@@ -1,23 +1,5 @@
-class Solution {
-    public int maxFrequency(int[] nums, int k, int numOps) {
-        int maxVal = Arrays.stream(nums).max().getAsInt() + k + 2;
-        int[] count = new int[maxVal];
-
-        for (int v : nums)
-            count[v]++;
-
-        for (int i = 1; i < maxVal; i++)
-            count[i] += count[i - 1];
-
-        int res = 0;
-        for (int i = 0; i < maxVal; i++) {
-            int left = Math.max(0, i - k);
-            int right = Math.min(maxVal - 1, i + k);
-            int total = count[right] - (left > 0 ? count[left - 1] : 0);
-            int freq = count[i] - (i > 0 ? count[i - 1] : 0);
-            res = Math.max(res, freq + Math.min(numOps, total - freq));
-        }
-
-        return res;
-    }
-}
+class Solution:
+    def maxFrequency(self, a: List[int], k: int, op: int) -> int:
+        a,z = sorted(a),Counter(a)
+        return max(max(min(bisect_right(a,v+k)-bisect_left(a,v-k)-z[v],op)+z[v],
+            min(bisect_right(a,v+2*k)-i,op)) for i,v in enumerate(a))
