@@ -1,5 +1,15 @@
-class Solution:
-    def maxFrequency(self, a: List[int], k: int, op: int) -> int:
-        a,z = sorted(a),Counter(a)
-        return max(max(min(bisect_right(a,v+k)-bisect_left(a,v-k)-z[v],op)+z[v],
-            min(bisect_right(a,v+2*k)-i,op)) for i,v in enumerate(a))
+public class Solution {
+    public bool HasSameDigits(string s) {
+         int n = s.Length;
+ char[] arr = s.ToCharArray();
+ for (int i = 1; i <= n - 2; i++)
+ {
+     for (int j = 0; j <= n - 1 - i; j++)
+     {
+         arr[j] =
+             (char)(((arr[j] - '0') + (arr[j + 1] - '0')) % 10 + '0');
+     }
+ }
+ return arr[0] == arr[1];
+    }
+}
