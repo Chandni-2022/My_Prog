@@ -1,16 +1,21 @@
 class Solution {
-    public int numberOfBeams(String[] bank) {
-        int ans=0, prev=0;
-        final int n=bank[0].length();
-        for(String row : bank){
-            int dev=0;
-            for(int j=0; j<n; j++)
-                dev+=(row.charAt(j)=='1'?1:0);
-            if (dev>0){
-                ans+=dev*prev;
-                prev=dev;
-            }   
+    public int countValidSelections(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        for (int i = 1; i < n; i++) {
+            left[i] = left[i - 1] + nums[i - 1];
+            right[n - i - 1] = right[n - i] + nums[n - i];
         }
-        return ans;
+
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != 0) continue;
+            if (left[i] == right[i]) res += 2;
+            else if (Math.abs(left[i] - right[i]) == 1) res += 1;
+        }
+
+        return res;
     }
 }
