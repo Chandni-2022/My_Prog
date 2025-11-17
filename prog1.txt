@@ -1,1 +1,15 @@
-c:\Users\chand\AppData\Local\Packages\MicrosoftWindows.Client.Core_cw5n1h2txyewy\TempState\ScreenClip\{85FF313E-598E-4592-BDA2-454B721573A6}.png
+class Solution {
+    public boolean kLengthApart(int[] nums, int k) {
+        int lastOccured = -1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 1) {
+                if (lastOccured != -1) {
+                    int gap = i - lastOccured - 1;
+                    if (gap < k) return false;
+                }
+                lastOccured = i;
+            }
+        }
+        return true;
+    }
+}
